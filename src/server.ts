@@ -1,6 +1,7 @@
 import express, { response } from 'express';
 import bodyParser from 'body-parser';
 import { filterImageFromURL, deleteLocalFiles } from './util/util';
+import { setTimeout } from 'timers';
 
 
 const fs = require('fs');
@@ -39,8 +40,8 @@ const path = require('path');
     filterImageFromURL(image_url).then((response) => {
       res.sendFile(response);
     });
-    
-    // Then delete all the filtered files on the server
+    setTimeout(() => {
+      // Then delete all the filtered files on the server
     let folderJsonPath = path.join('./', 'src', 'util', 'tmp');
     let listFilteredImages = new Array;
     fs.readdirSync(folderJsonPath).forEach((file: any) => {
@@ -48,6 +49,8 @@ const path = require('path');
       listFilteredImages.push(path.resolve(folderJsonPath, file));
     });
     deleteLocalFiles(listFilteredImages);
+    },2500);
+    
   });
 
   // Delete all filtered images
@@ -67,7 +70,7 @@ const path = require('path');
   // Root Endpoint
   // Displays a simple message to the user
   app.get("/", async (req, res) => {
-    res.send("Image filtering service");
+    res.sendStatus(200).send("Image filtering service");
   });
 
 

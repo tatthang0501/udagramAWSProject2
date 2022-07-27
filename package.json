@@ -1,7 +1,10 @@
 {
   "name": "udacity-c2-image-filter",
   "version": "1.0.0",
-  "description": "",
+  "engines": {
+    "node": "12.16.3"
+  },
+  "description": "udagram aws project 2",
   "scripts": {
     "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1",

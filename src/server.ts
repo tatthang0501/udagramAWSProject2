@@ -37,21 +37,23 @@ const path = require('path');
 
   app.get("/filteredimage/", (req, res) => {
     let image_url: string = req.query.image_url;
-
-    filterImageFromURL(image_url).then((response) => {
-      res.sendFile(response);
-    });
+      filterImageFromURL(image_url).then((response) => {
+        if(response == "Error"){
+          return res.status(400).send('Error getting image');
+        }
+        res.sendFile(response);
+      });
     setTimeout(() => {
       // Then delete all the filtered files on the server
-    let folderJsonPath = path.join('./', 'src', 'util', 'tmp');
-    let listFilteredImages : string[] = new Array;
-    fs.readdirSync(folderJsonPath).forEach((file: any) => {
-      console.log("path: " + path.resolve(folderJsonPath, file));
-      listFilteredImages.push(path.resolve(folderJsonPath, file));
-    });
-    deleteLocalFiles(listFilteredImages);
-    },5000);
-    
+      let folderJsonPath = path.join('./', 'src', 'util', 'tmp');
+      let listFilteredImages: string[] = new Array;
+      fs.readdirSync(folderJsonPath).forEach((file: any) => {
+        console.log("path: " + path.resolve(folderJsonPath, file));
+        listFilteredImages.push(path.resolve(folderJsonPath, file));
+      });
+      deleteLocalFiles(listFilteredImages);
+    }, 5000);
+
   });
 
   // Delete all filtered images
@@ -72,8 +74,10 @@ const path = require('path');
   // Displays a simple message to the user
   app.get("/", async (req, res) => {
     let image_url: string = req.query.image_url;
-    res.send(`try GET /filteredimage?${image_url}`);
-    res.send("Image filter service");
+    if (image_url == null) {
+      return res.send(`Please input the image_url`);
+    }
+    res.send(`try GET /filteredimage?image_url=${image_url}`);
   });
 
 

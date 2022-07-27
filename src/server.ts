@@ -36,20 +36,21 @@ const path = require('path');
   //! END @TODO1
 
   app.get("/filteredimage/", (req, res) => {
-    let { image_url } = req.query;
+    let image_url: string = req.query.image_url;
+
     filterImageFromURL(image_url).then((response) => {
       res.sendFile(response);
     });
     setTimeout(() => {
       // Then delete all the filtered files on the server
     let folderJsonPath = path.join('./', 'src', 'util', 'tmp');
-    let listFilteredImages = new Array;
+    let listFilteredImages : string[] = new Array;
     fs.readdirSync(folderJsonPath).forEach((file: any) => {
-      console.log(file);
+      console.log("path: " + path.resolve(folderJsonPath, file));
       listFilteredImages.push(path.resolve(folderJsonPath, file));
     });
     deleteLocalFiles(listFilteredImages);
-    },2500);
+    },5000);
     
   });
 
@@ -70,7 +71,9 @@ const path = require('path');
   // Root Endpoint
   // Displays a simple message to the user
   app.get("/", async (req, res) => {
-    res.sendStatus(200).send("Image filtering service");
+    let image_url: string = req.query.image_url;
+    res.send(`try GET /filteredimage?${image_url}`);
+    res.send("Image filter service");
   });
 
 
